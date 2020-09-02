@@ -1,22 +1,33 @@
 "--------- IMPORTS
 language en_US.UTF-8
 
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-set runtimepath^=~/.vim/bundle/vim-airline
-set runtimepath^=~/.vim/bundle/nerdtree
-set runtimepath^=~/.vim/bundle/vim-go
-set runtimepath^=~/.vim/bundle/vim-code-dark
-set runtimepath^=~/.vim/bundle/jedi-vim
-set runtimepath^=~/.vim/bundle/syntatic
-set runtimepath^=~/.vim/bundle/fugitive
-set runtimepath^=~/.vim/bundle/vim-virtualenv
-set runtimepath^=~/.vim/bundle/vim-gitgutter
-set runtimepath^=~/.vim/bundle/ale
-set runtimepath^=~/.vim/bundle/vim-jsx-pretty
-set runtimepath^=~/.vim/bundle/vim-jsx-typescript
-"--------- DEFAUTLS SET
-"
-execute pathogen#infect()
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'kien/ctrlp.vim'
+Plugin 'vim-airline/vim-airline'
+Plugin 'dense-analysis/ale'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'tpope/vim-commentary'
+Plugin 'dyng/ctrlsf.vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'preservim/nerdtree'
+Plugin 'fatih/vim-go'
+Plugin 'vim-syntastic/syntastic'
+Plugin 'tomasiser/vim-code-dark'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'yuezk/vim-js'
+Plugin 'maxmellon/vim-jsx-pretty'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'peitalin/vim-jsx-typescript'
+
+call vundle#end()
+filetype plugin indent on
+
 syntax on
 
 set ttyfast
