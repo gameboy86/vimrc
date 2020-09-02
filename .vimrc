@@ -6,23 +6,24 @@ set runtimepath^=~/.vim/bundle/vim-airline
 set runtimepath^=~/.vim/bundle/nerdtree
 set runtimepath^=~/.vim/bundle/vim-go
 set runtimepath^=~/.vim/bundle/vim-code-dark
-set runtimepath^=~/.vim/bundele/jedi-vim
+set runtimepath^=~/.vim/bundle/jedi-vim
 set runtimepath^=~/.vim/bundle/syntatic
 set runtimepath^=~/.vim/bundle/fugitive
 set runtimepath^=~/.vim/bundle/vim-virtualenv
 set runtimepath^=~/.vim/bundle/vim-gitgutter
+set runtimepath^=~/.vim/bundle/ale
+set runtimepath^=~/.vim/bundle/vim-jsx-pretty
+set runtimepath^=~/.vim/bundle/vim-jsx-typescript
 "--------- DEFAUTLS SET
 "
 execute pathogen#infect()
 syntax on
-filetype plugin indent on
 
 set ttyfast
 set showmode
 set showcmd
 set title
 set number
-set hidden
 set hidden
 set ffs=unix,dos,mac
 set path=$PWD/**
@@ -38,6 +39,7 @@ set wildignore+=*.zip,*.tar
 
 set tabstop=4
 set shiftwidth=4
+set softtabstop=4
 set expandtab
 
 set list
@@ -66,30 +68,54 @@ au FileType py set textwidth=79 " PEP-8 Friendly
 
 "--------- Key Mappings
 inoremap jk <Esc>
+vnoremap jk <Esc>
 
 noremap <Up> <Nop>
 noremap <Down> <Nop>
 noremap <Left> <Nop>
 noremap <Right> <Nop>
 
+inoremap <UP> <Nop>
+inoremap <Down> <Nop>
+inoremap <Left> <Nop>
+inoremap <Right> <Nop>
+
+" noremap <A-h> <Left>
+" noremap <A-j> <Down>
+" noremap <A-k> <Up>
+" noremap <A-l> <Right>
+
+" inoremap <C-h> <Left>
+" inoremap <C-j> <Down>
+" inoremap <C-k> <Up>
+" inoremap <C-l> <Right>
+" cnoremap <C-h> <Left>
+" cnoremap <C-j> <Down>
+" cnoremap <C-k> <Up>
+" cnoremap <C-l> <Right>
+let g:deoplete#complete_method = "omnifunc"
 nmap <silent> <F2> :lchdir %:p:h<CR>:pwd<CR>
+let g:mundo_right = 1
+
+nnoremap <F5> :MundoToggle<CR>
 nmap <leader>l :set list!<CR> 
 nmap oo o<Esc>
 nmap OO O<Esc>
 nmap ss i<space><esc>
+nmap sa i<space>
 nmap a<CR> i<CR><esc>
-
-vnoremap <C-c> :w !pbcopy<CR><CR>
-noremap <C-v> :r !pbpaste<CR><CR>
+" vnoremap <C-c> :w !pbcopy<CR><CR>
+" noremap <C-v> :r !pbpaste<CR><CR>
 
 
 map <silent>,h <C-w>h
 map <silent>,j <C-w>j
 map <silent>,k <C-w>k
 map <silent>,l <C-w>l
-
+nnoremap H gT
+nnoremap L gt
 nmap <space><space> :noh<cr> 
-
+set visualbell
 " move lines
 
 noremap <C-j> :m .+1<CR>==
@@ -102,7 +128,9 @@ vnoremap <C-k> :m '<-2<CR>gv=gv
 " au BufNewFile,BufRead *.py 
 set foldmethod=indent
 nnoremap <space> za
-au BufRead * normal zR
+au * normal zR
+set foldlevel=99
+" au BufNewFile,BufRead * normal zR
 " -------gitguter
 highlight! link SignColumn LineNr
 
@@ -121,7 +149,7 @@ let g:syntastic_aggregate_errors = 1
 
 "-------- NERDTree
 map <F6> :NERDTreeToggle<CR>
-
+let NERDTreeShowHidden=1
 "-------- jedi-vim
 autocmd FileType python setlocal completeopt-=preview
 let g:jedi#popup_select_first = 0
@@ -145,7 +173,7 @@ let g:ctrlp_cmd = 'CtrlPLastMode'
 let g:ctrlp_extensions = ['buffertag', 'tag', 'line', 'dir']
 
 "--------- Fugitive.vim (GIT)
-" map <silent>gb :Gblame<CR>
+map <silent>gb :Gblame<CR>
 
 
 "--------- NERDTree Settings
@@ -156,7 +184,22 @@ let NERDTreeShowBookmarks=1
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 "----------- Golang settings
-autocmd FileType go nmap <F9> :GoRun!<CR>
+" autocmd FileType go nmap <F9> :GoRun!<CR>
+
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
+
+" ---------- CtrlSF settings
+let g:ctrlsf_default_view_mode = 'compact'
+nmap     <C-F>f <Plug>CtrlSFPrompt
+vmap     <C-F>f <Plug>CtrlSFVwordPath
+vmap     <C-F>F <Plug>CtrlSFVwordExec
+nmap     <C-F>n <Plug>CtrlSFCwordPath
+nmap     <C-F>p <Plug>CtrlSFPwordPath
+nnoremap <C-F>o :CtrlSFOpen<CR>
+nnoremap <C-F>t :CtrlSFToggle<CR>
+inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+
 
 fu! SaveSession()
     execute 'mksession! ' . getcwd() . '/.session.vim'
@@ -176,11 +219,39 @@ endif
 endfunction
 
 autocmd VimLeave * NERDTreeClose
-autocmd VimLeave * call SaveSession()
+" autocmd VimLeave * call SaveSession()
 
 " autocmd VimEnter * nested call RestoreSession()
-autocmd VimEnter * NERDTree
-
+" autocmd VimEnter * NERDTree
+nmap     nt :NERDTreeToggle<CR>
 
 set splitbelow
 set splitright
+
+" add yaml stuffs
+au! BufNewFile,BufReadPost *.{yaml,yml} set filetype=yaml foldmethod=indent
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
+
+" vim-go
+let g:go_auto_sameids = 1
+let g:go_highlight_array_whitespace_error = 1
+let g:go_highlight_chan_whitespace_error = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_space_tab_error = 1
+let g:go_highlight_trailing_whitespace_error = 0
+let g:go_highlight_operators = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_parameters = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_generate_tags = 1
+let g:go_highlight_string_spellcheck = 1
+let g:go_highlight_format_strings = 1
+let g:go_highlight_variable_declarations = 1
+let g:go_highlight_variable_assignments = 1
+let g:go_fmt_experimental = 1
+let g:go_metalinter_autosave=1
+let g:go_metalinter_autosave_enabled=['golint', 'govet']
