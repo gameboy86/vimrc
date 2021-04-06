@@ -3,6 +3,12 @@
 "*****************************************************************************
 "" Vim-Plug core
 "*****************************************************************************
+let $LANG = 'en'
+
+" Restore cursor position on buffer navigation
+:autocmd BufEnter * silent! normal! g`"
+
+
 let vimplug_exists=expand('~/.vim/autoload/plug.vim')
 if has('win32')&&!has('win64')
   let curl_exists=expand('C:\Windows\Sysnative\curl.exe')
@@ -12,8 +18,9 @@ endif
 
 let g:vim_bootstrap_langs = "c,go,html,javascript,python,typescript"
 let g:vim_bootstrap_editor = "vim"				" nvim or vim
-let g:vim_bootstrap_theme = "dracula"
+let g:vim_bootstrap_theme = "codedark"
 let g:vim_bootstrap_frams = "vuejs"
+
 
 if !filereadable(vimplug_exists)
   if !executable(curl_exists)
@@ -36,6 +43,7 @@ call plug#begin(expand('~/.vim/plugged'))
 "*****************************************************************************
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
+Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
@@ -49,8 +57,15 @@ Plug 'dense-analysis/ale'
 Plug 'Yggdroot/indentLine'
 Plug 'editor-bootstrap/vim-bootstrap-updater'
 Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
-Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'jmcantrell/vim-virtualenv'
+Plug 'dyng/ctrlsf.vim'
+Plug 'vim-syntastic/syntastic'
+Plug 'nvie/vim-flake8'
+Plug 'mg979/vim-visual-multi'
 Plug 'tomasiser/vim-code-dark'
+Plug 'ap/vim-buftabline'
+Plug 'ycm-core/YouCompleteMe'
+Plug 'EvanQuan/vim-executioner'
 
 if isdirectory('/usr/local/opt/fzf')
   Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
@@ -114,7 +129,20 @@ Plug 'HerringtonDarkholme/yats.vim'
 Plug 'posva/vim-vue'
 Plug 'leafOfTree/vim-vue-plugin'
 
+" rust
+Plug 'racer-rust/vim-racer'
+Plug 'rust-lang/rust.vim'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
+Plug 'keremc/asyncomplete-racer.vim'
 
+" dart
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'natebosch/vim-lsc'
+Plug 'natebosch/vim-lsc-dart'
 
 "*****************************************************************************
 "*****************************************************************************
@@ -175,6 +203,7 @@ let g:session_autoload = "no"
 let g:session_autosave = "no"
 let g:session_command_aliases = 1
 
+
 " swap and backup files
 set nobackup
 set nowritebackup
@@ -210,7 +239,8 @@ set ruler
 set number relativenumber
 
 let no_buffers_menu=1
-colorscheme codedark 
+
+colorscheme codedark
 
 
 set mousemodel=popup
@@ -310,7 +340,7 @@ let g:nerdtree_tabs_focus_on_files=1
 let g:NERDTreeWinSize = 50
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 nnoremap <silent> <F2> :NERDTreeFind<CR>
-nnoremap <silent> <F3> :NERDTreeToggle<CR>
+nnoremap <silent> <F3> :NERDTreeToggle <CR>
 
 " grep.vim
 nnoremap <silent> <leader>f :Rgrep<CR>
@@ -319,7 +349,10 @@ let Grep_Skip_Files = '*.log *.db'
 let Grep_Skip_Dirs = '.git node_modules'
 
 " terminal emulation
-nnoremap <silent> <leader>sh :terminal<CR>
+nnoremap <silent> <leader>sh :terminal ++rows=10<CR>
+
+set splitbelow
+set splitright
 
 
 "*****************************************************************************
@@ -406,6 +439,19 @@ noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 "" Opens a tab edit command with the path of the currently edited file filled
 noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
+
+""" ctrlsf.vim
+nmap     <C-F>f <Plug>CtrlSFPrompt
+vmap     <C-F>f <Plug>CtrlSFVwordPath
+vmap     <C-F>F <Plug>CtrlSFVwordExec
+nmap     <C-F>n <Plug>CtrlSFCwordPath
+nmap     <C-F>p <Plug>CtrlSFPwordPath
+nnoremap <C-F>o :CtrlSFOpen<CR>
+nnoremap <C-F>t :CtrlSFToggle<CR>
+inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+
+let g:ctrlsf_position = 'right'
+let g:ctrlsf_search_mode = 'async'
 
 "" fzf.vim
 set wildmode=list:longest,list:full
@@ -497,7 +543,7 @@ nnoremap <Leader>o :.Gbrowse<CR>
 " fold
 set foldmethod=indent
 nnoremap <space> za
-au * normal zR
+" au * normal zR
 set foldlevel=99
 
 "*****************************************************************************
@@ -618,9 +664,9 @@ let g:jedi#rename_command = "<leader>r"
 let g:jedi#show_call_signatures = "0"
 let g:jedi#completions_command = "<C-Space>"
 let g:jedi#smart_auto_mappings = 0
-let g:jedi#popup_select_first = 0
-let g:jedi#use_splits_not_buffers = "left"
-let g:jedi#use_tabs_not_buffers = 1
+" let g:jedi#popup_select_first = 0
+" let g:jedi#use_splits_not_buffers = "left"
+" let g:jedi#use_tabs_not_buffers = 1
 
 " ale
 :call extend(g:ale_linters, {
@@ -631,11 +677,11 @@ let g:airline#extensions#virtualenv#enabled = 1
 
 " Syntax highlight
 let python_highlight_all = 1
+let python_highlight_indent_errors = 1
 
 
 " typescript
 let g:yats_host_keyword = 1
-
 
 
 " vuejs
@@ -644,7 +690,30 @@ let g:vue_disable_pre_processors=1
 " vim vue plugin
 let g:vim_vue_plugin_load_full_syntax = 1
 
+" Rust
+" Rust.vim config
+let g:rustfmt_autosave = 1
 
+" Racer config
+let g:racer_experimental_completer = 1
+au FileType rust inoremap <C-Space> <C-x><C-o>
+au FileType rust inoremap <C-@> <C-x><C-o>
+au FileType rust nmap gd <Plug>(rust-def)
+au FileType rust nmap gs <Plug>(rust-def-split)
+au FileType rust nmap gx <Plug>(rust-def-vertical)
+au FileType rust nmap <leader>gd <Plug>(rust-doc-tab)
+
+" Dart
+au FileType dart nmap <C-Space> <C-x><C-o>
+
+let g:lsc_auto_map = {'defaults': v:true, 'Completion': 'omnifunc', 'ShowHover': 'K'}
+let g:lsc_enable_autocomplete = v:false
+let g:executioner#extensions = {'dart': 'dart %'}
+
+au FileType dart map <buffer> <leader>cc :ExecutionerHorizontal<CR>
+au FileType dart imap <buffer> <leader>cc :ExecutionerHorizontal<CR>
+
+au FileType dart map <buffer> <leader>cc  :exec :r!dart expand('%')
 "*****************************************************************************
 "*****************************************************************************
 
@@ -692,3 +761,16 @@ else
   let g:airline_symbols.readonly = ''
   let g:airline_symbols.linenr = ''
 endif
+
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+
+let g:syntastic_python_checkers = ['mypy', 'pep8', 'pycodestyle', 'pyflakes', 'python', 'flake8']
+let g:jedi#show_call_signatures = "1"
+let g:jedi#force_py_version = 3
+
+
+let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py'
