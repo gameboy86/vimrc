@@ -42,7 +42,7 @@ call plug#begin(expand('~/.vim/plugged'))
 "" Plug install packages
 "*****************************************************************************
 Plug 'scrooloose/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
+" Plug 'jistr/vim-nerdtree-tabs'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -52,7 +52,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'vim-scripts/grep.vim'
 Plug 'vim-scripts/CSApprox'
 Plug 'Raimondi/delimitMate'
-Plug 'majutsushi/tagbar'
+" Plug 'majutsushi/tagbar'
 Plug 'dense-analysis/ale'
 Plug 'Yggdroot/indentLine'
 Plug 'editor-bootstrap/vim-bootstrap-updater'
@@ -63,9 +63,12 @@ Plug 'vim-syntastic/syntastic'
 Plug 'nvie/vim-flake8'
 Plug 'mg979/vim-visual-multi'
 Plug 'tomasiser/vim-code-dark'
-Plug 'ap/vim-buftabline'
+" Plug 'ap/vim-buftabline'
 Plug 'ycm-core/YouCompleteMe'
 Plug 'EvanQuan/vim-executioner'
+Plug 'puremourning/vimspector'
+Plug 'vim-ctrlspace/vim-ctrlspace'
+Plug 'szw/vim-maximizer'
 
 if isdirectory('/usr/local/opt/fzf')
   Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
@@ -230,6 +233,19 @@ nmap OO O<Esc>
 nmap ss i<space><esc>
 nmap sa i<space>
 nmap a<CR> i<CR><esc>
+
+" Settings required for vim-ctrlspace
+set nocompatible
+nnoremap <silent><C-p> :CtrlSpace O<CR>
+
+let g:CtrlSpaceSaveWorkspaceOnExit = 0
+let g:CtrlSpaceLoadLastWorkspaceOnStart = 1
+let g:airline_exclude_preview = 1
+
+" vim-maximizer
+nnoremap <Leader>mm :MaximizerToggle<CR>
+vnoremap <Leader>mm :MaximizerToggle<CR>gv
+inoremap <Leader>mm <C-o>:MaximizerToggle<CR>
 
 "*****************************************************************************
 "" Visual Settings
@@ -473,7 +489,6 @@ endif
 
 cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
 nnoremap <silent> <leader>b :Buffers<CR>
-nnoremap <silent> <leader>e :FZF -m<CR>
 "Recovery commands from history through FZF
 nmap <leader>y :History:<CR>
 
